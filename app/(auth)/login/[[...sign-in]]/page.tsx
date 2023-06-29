@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
 import { UserAuthForm } from "@/components/user-auth-form"
+import { SignIn } from "@clerk/nextjs"
 
 export const metadata: Metadata = {
   title: "Login",
@@ -36,7 +37,7 @@ export default function LoginPage() {
             Enter your email to sign in to your account
           </p>
         </div>
-        <UserAuthForm />
+        <SignIn />
         <p className="px-8 text-center text-sm text-muted-foreground">
           <Link
             href="/register"

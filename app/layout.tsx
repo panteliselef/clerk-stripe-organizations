@@ -8,6 +8,7 @@ import { Toaster } from "@/components/ui/toaster"
 import { Analytics } from "@/components/analytics"
 import { TailwindIndicator } from "@/components/tailwind-indicator"
 import { ThemeProvider } from "@/components/theme-provider"
+import { ClerkProvider } from "@clerk/nextjs"
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -73,22 +74,24 @@ export const metadata = {
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <head />
-      <body
-        className={cn(
-          "min-h-screen bg-background font-sans antialiased",
-          fontSans.variable,
-          fontHeading.variable
-        )}
-      >
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          {children}
-          <Analytics />
-          <Toaster />
-          <TailwindIndicator />
-        </ThemeProvider>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en" suppressHydrationWarning>
+        <head />
+        <body
+          className={cn(
+            "min-h-screen bg-background font-sans antialiased",
+            fontSans.variable,
+            fontHeading.variable
+          )}
+        >
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            {children}
+            <Analytics />
+            <Toaster />
+            <TailwindIndicator />
+          </ThemeProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   )
 }

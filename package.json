@@ -12,10 +12,12 @@
     "turbo": "next dev --turbo",
     "start": "next start",
     "lint": "next lint",
+    "stripe": "stripe listen --forward-to localhost:3000/api/webhooks/stripe",
     "preview": "next build && next start",
     "postinstall": "prisma generate"
   },
   "dependencies": {
+    "@clerk/nextjs": "^4.21.10",
     "@editorjs/code": "^2.8.0",
     "@editorjs/editorjs": "^2.26.5",
     "@editorjs/embed": "^2.5.3",
@@ -67,7 +69,7 @@
     "contentlayer": "^0.3.1",
     "date-fns": "^2.29.3",
     "lucide-react": "^0.92.0",
-    "next": "13.3.2-canary.13",
+    "next": "13.4.7",
     "next-auth": "4.22.1",
     "next-contentlayer": "^0.3.1",
     "next-themes": "^0.2.1",

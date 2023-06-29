@@ -4,6 +4,7 @@ import Stripe from "stripe"
 import { env } from "@/env.mjs"
 import { db } from "@/lib/db"
 import { stripe } from "@/lib/stripe"
+import { clerkClient } from "@clerk/nextjs"
 
 export async function POST(req: Request) {
   const body = await req.text()
@@ -21,6 +22,8 @@ export async function POST(req: Request) {
     return new Response(`Webhook Error: ${error.message}`, { status: 400 })
   }
 
+  console.log("[STRIPE EVENT]", event.type)
+
   const session = event.data.object as Stripe.Checkout.Session
 
   if (event.type === "checkout.session.completed") {
@@ -29,20 +32,33 @@ export async function POST(req: Request) {
       session.subscription as string
     )
 
+    const customerId =
+      typeof subscription.customer === "string"
+        ? subscription.customer
+        : subscription.customer.id
+    const { userId, organizationName } = subscription.metadata
+
     // Update the user stripe into in our database.
     // Since this is the initial subscription, we need to update
     // the subscription id and customer id.
-    await db.user.update({
-      where: {
-        id: session?.metadata?.userId,
-      },
-      data: {
+    await clerkClient.users.updateUserMetadata(userId, {
+      publicMetadata: {
+        stripeCustomerId: customerId,
         stripeSubscriptionId: subscription.id,
-        stripeCustomerId: subscription.customer as string,
         stripePriceId: subscription.items.data[0].price.id,
-        stripeCurrentPeriodEnd: new Date(
-          subscription.current_period_end * 1000
-        ),
+        paidUntil: new Date(subscription.current_period_end * 1000),
+        endsAt: new Date(subscription.current_period_end * 1000),
+      },
+    })
+
+    await clerkClient.organizations.createOrganization({
+      createdBy: userId as string,
+      name: organizationName as string,
+      publicMetadata: {
+        stripeSubscriptionId: subscription.id,
+        stripePriceId: subscription.items.data[0].price.id,
+        paidUntil: new Date(subscription.current_period_end * 1000),
+        endsAt: new Date(subscription.current_period_end * 1000),
       },
     })
   }
