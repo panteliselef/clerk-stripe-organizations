@@ -36,7 +36,7 @@ export async function POST(req: Request) {
       typeof subscription.customer === "string"
         ? subscription.customer
         : subscription.customer.id
-    const { userId, organizationName } = subscription.metadata
+    const { userId, organizationId } = subscription.metadata
 
     // Update the user stripe into in our database.
     // Since this is the initial subscription, we need to update
@@ -47,18 +47,14 @@ export async function POST(req: Request) {
         stripeSubscriptionId: subscription.id,
         stripePriceId: subscription.items.data[0].price.id,
         paidUntil: new Date(subscription.current_period_end * 1000),
-        endsAt: new Date(subscription.current_period_end * 1000),
       },
     })
 
-    await clerkClient.organizations.createOrganization({
-      createdBy: userId as string,
-      name: organizationName as string,
+    await clerkClient.organizations.updateOrganizationMetadata(organizationId, {
       publicMetadata: {
         stripeSubscriptionId: subscription.id,
         stripePriceId: subscription.items.data[0].price.id,
         paidUntil: new Date(subscription.current_period_end * 1000),
-        endsAt: new Date(subscription.current_period_end * 1000),
       },
     })
   }

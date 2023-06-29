@@ -3,7 +3,12 @@
 import * as React from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useOrganization, useOrganizationList, useUser } from "@clerk/nextjs"
+import {
+  useOrganization,
+  useOrganizationList,
+  useOrganizations,
+  useUser,
+} from "@clerk/nextjs"
 import { Check, ChevronsUpDown, PlusCircle } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -49,7 +54,12 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { useForm } from "react-hook-form"
-import { PurchaseOrgSchema } from "@/app/api/stripe/subscription/route"
+import {
+  purchaseOrgSchema,
+  PurchaseOrgSchema,
+} from "@/app/api/stripe/subscription/route"
+import * as z from "zod"
+import { useState } from "react"
 
 export function WorkspaceSwitcher() {
   const router = useRouter()
@@ -156,7 +166,7 @@ export function WorkspaceSwitcher() {
                     onSelect={async () => {
                       await orgs.setActive({ organization: org })
                       setSwitcherOpen(false)
-                      // router.push(`/${org.id}`)
+                      router.push(`/dashboard/${org.id}`)
                     }}
                     className="cursor-pointer text-sm"
                   >
@@ -212,6 +222,13 @@ export function WorkspaceSwitcher() {
 
 const fetchPlans = fetch("/api/stripe/plans").then((res) => res.json())
 
+export const formOrgSchema = z.object({
+  orgName: z.string().min(5, "Name must be at least 5 characters"),
+  planId: z.string(),
+})
+
+export type FormOrgSchema = z.infer<typeof formOrgSchema>
+
 const createOrg = (org: PurchaseOrgSchema) =>
   fetch("/api/stripe/subscription", {
     method: "POST",
@@ -221,11 +238,28 @@ const createOrg = (org: PurchaseOrgSchema) =>
 function NewOrganizationDialog(props: { closeDialog: () => void }) {
   const plans = React.use(fetchPlans)
   const form = useForm()
+  const { createOrganization, isLoaded } = useOrganizations()
+  const [isCreatingOrg, setCreatingOrg] = useState(false)
+  const [isCreatingStripeSession, setCreatingStripeSession] = useState(false)
 
   const toaster = useToast()
 
-  async function handleCreateOrg(data: PurchaseOrgSchema) {
-    const response = await createOrg(data)
+  async function handleCreateOrg(data: FormOrgSchema) {
+    if (!isLoaded) return
+
+    setCreatingOrg(true)
+    const org = await createOrganization({
+      name: data.orgName,
+    })
+
+    setCreatingStripeSession(true)
+
+    const response = await createOrg({
+      planId: data.planId,
+      orgId: org.id,
+    })
+
+    console.log("response ")
 
     if (response.success) window.location.href = response.url
     else
@@ -254,6 +288,9 @@ function NewOrganizationDialog(props: { closeDialog: () => void }) {
           <FormField
             control={form.control}
             name="orgName"
+            rules={{
+              required: "Organization name is required",
+            }}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Organization name *</FormLabel>
@@ -268,6 +305,9 @@ function NewOrganizationDialog(props: { closeDialog: () => void }) {
           <FormField
             control={form.control}
             name="planId"
+            rules={{
+              required: "Plan is required",
+            }}
             render={({ field }) => (
               <>
                 <div className="flex justify-between">
@@ -304,11 +344,27 @@ function NewOrganizationDialog(props: { closeDialog: () => void }) {
             )}
           />
 
-          <DialogFooter>
-            <Button variant="outline" onClick={() => props.closeDialog()}>
+          <DialogFooter className={"items-center"}>
+            <p className={"text-sm text-gray-600"}>
+              {isCreatingStripeSession
+                ? "Redirecting you to checkout"
+                : isCreatingOrg
+                ? "Creating organization ..."
+                : ""}
+            </p>
+            <Button
+              disabled={isCreatingOrg || isCreatingStripeSession}
+              variant="outline"
+              onClick={() => props.closeDialog()}
+            >
               Cancel
             </Button>
-            <Button type="submit">Continue</Button>
+            <Button
+              disabled={isCreatingOrg || isCreatingStripeSession}
+              type="submit"
+            >
+              Continue
+            </Button>
           </DialogFooter>
         </form>
       </Form>

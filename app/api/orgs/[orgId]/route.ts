@@ -22,23 +22,12 @@ export async function GET(
       return new Response(null, { status: 403 })
     }
 
-    const rawMembers =
+    const members =
       await clerkClient.organizations.getOrganizationMembershipList({
         organizationId: params.orgId,
       })
 
-    // const members = rawMembers.map((member) => ({
-    //   id: member.id,
-    //   email: member.publicUserData?.identifier ?? "",
-    //   role: member.role,
-    //   joinedAt: member.createdAt,
-    //   avatarUrl: member.publicUserData?.imageUrl,
-    //   name: [
-    //     member.publicUserData?.firstName,
-    //     member.publicUserData?.lastName,
-    //   ].join(" "),
-    // }))
-    return new Response(JSON.stringify(rawMembers), { status: 200 })
+    return new Response(JSON.stringify(members), { status: 200 })
   } catch (error) {
     if (error instanceof z.ZodError) {
       return new Response(JSON.stringify(error.issues), { status: 422 })

@@ -3,6 +3,8 @@ import { notFound } from "next/navigation"
 import { DashboardNav } from "@/components/nav"
 import { clerkClient } from "@clerk/nextjs"
 import * as React from "react"
+import { SyncActiveOrgFromUrl } from "./sync-active-org-from-url"
+import { Organization } from "@clerk/backend"
 
 interface OrganizationLayoutProps {
   children?: React.ReactNode
@@ -26,6 +28,7 @@ export default async function OrganizationLayout({
 
   return (
     <>
+      <SyncActiveOrgFromUrl />
       <aside className="hidden w-[200px] flex-col md:flex">
         <DashboardNav
           items={[
@@ -42,7 +45,7 @@ export default async function OrganizationLayout({
           ]}
         />
       </aside>
-      <main className="flex w-full flex-1 flex-col overflow-hidden">
+      <main className="relative flex w-full flex-1 flex-col overflow-hidden">
         {children}
       </main>
     </>

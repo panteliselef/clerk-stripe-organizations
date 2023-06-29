@@ -1,15 +1,14 @@
-import { getServerSession } from "next-auth/next"
 import * as z from "zod"
 
-import { db } from "@/lib/db"
 import { auth, clerkClient } from "@clerk/nextjs"
 import { stripe } from "@/lib/stripe"
 import { env } from "@/env.mjs"
 
 export const purchaseOrgSchema = z.object({
-  orgName: z.string().min(5, "Name must be at least 5 characters"),
+  orgId: z.string().min(5, "Id must be at least 5 characters"),
   planId: z.string(),
 })
+
 export type PurchaseOrgSchema = z.infer<typeof purchaseOrgSchema>
 
 export async function POST(req: Request) {
@@ -22,7 +21,7 @@ export async function POST(req: Request) {
 
     const json = await req.json()
     const body = purchaseOrgSchema.parse(json)
-    const { orgName, planId } = body
+    const { orgId, planId } = body
 
     const { publicMetadata } = await clerkClient.users.getUser(userId)
 
@@ -34,9 +33,9 @@ export async function POST(req: Request) {
       payment_method_types: ["card"],
       client_reference_id,
       subscription_data: {
-        metadata: { userId, organizationName: orgName },
+        metadata: { userId, organizationId: orgId },
       },
-      success_url: `${env.NEXT_PUBLIC_APP_URL}/dashboard`,
+      success_url: `${env.NEXT_PUBLIC_APP_URL}/dashboard/${orgId}`,
       line_items: [{ price: planId, quantity: 1 }],
     })
 
