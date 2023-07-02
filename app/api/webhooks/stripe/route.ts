@@ -38,6 +38,7 @@ export async function POST(req: Request) {
         : subscription.customer.id
     const { userId, organizationId } = subscription.metadata
 
+    // setTimeout(async () => {
     // Update the user stripe into in our database.
     // Since this is the initial subscription, we need to update
     // the subscription id and customer id.
@@ -57,6 +58,7 @@ export async function POST(req: Request) {
         paidUntil: new Date(subscription.current_period_end * 1000),
       },
     })
+    // }, 3000)
   }
 
   if (event.type === "invoice.payment_succeeded") {

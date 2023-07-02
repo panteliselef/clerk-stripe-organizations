@@ -18,7 +18,7 @@ export function OrganizationImage(props: {
   image: string
   orgId: string
 }) {
-  const [imgSrc, setImgSrc] = React.useState("")
+  const [setImgSrc] = React.useState("")
   const [cropModalOpen, setCropModalOpen] = React.useState(false)
 
   return (

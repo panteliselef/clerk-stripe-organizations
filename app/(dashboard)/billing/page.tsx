@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation"
 
-import { stripe } from "@/lib/stripe"
 import { getUserSubscriptionPlan } from "@/lib/subscription"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { BillingForm } from "@/components/billing-form"

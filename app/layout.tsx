@@ -3,7 +3,7 @@ import localFont from "next/font/local"
 
 import "@/styles/globals.css"
 import { siteConfig } from "@/config/site"
-import { absoluteUrl, cn } from "@/lib/utils"
+import { cn } from "@/lib/utils"
 import { Toaster } from "@/components/ui/toaster"
 import { Analytics } from "@/components/analytics"
 import { TailwindIndicator } from "@/components/tailwind-indicator"
@@ -74,7 +74,30 @@ export const metadata = {
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <ClerkProvider>
+    <ClerkProvider
+      appearance={{
+        variables: {
+          colorBackground: "#19191A",
+          colorInputBackground: "#19191A",
+          colorAlphaShade: "white",
+          colorText: "white",
+          colorInputText: "white",
+        },
+        elements: {
+          logoImage: {
+            filter: "brightness(0) invert(1)",
+          },
+          socialButtonsProviderIcon__github: {
+            filter: "brightness(0) invert(1)",
+          },
+          footer: {
+            "& + div": {
+              background: "rgb(49, 49, 51)",
+            },
+          },
+        },
+      }}
+    >
       <html lang="en" suppressHydrationWarning>
         <head />
         <body

@@ -13,9 +13,7 @@ import { Button } from "@/components/ui/button"
 import { LoadingCard } from "./_components/loading-card"
 import { env } from "@/env.mjs"
 
-export default function WorkspaceSettingsPage(props: {
-  params: { workspaceId: string }
-}) {
+export default function WorkspaceSettingsPage() {
   const { orgId } = auth()
 
   if (orgId) return <OrganizationSettingsPage />

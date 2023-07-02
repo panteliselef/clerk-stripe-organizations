@@ -4,7 +4,6 @@ import { DashboardNav } from "@/components/nav"
 import { clerkClient } from "@clerk/nextjs"
 import * as React from "react"
 import { SyncActiveOrgFromUrl } from "./sync-active-org-from-url"
-import { Organization } from "@clerk/backend"
 
 interface OrganizationLayoutProps {
   children?: React.ReactNode
@@ -34,12 +33,17 @@ export default async function OrganizationLayout({
           items={[
             {
               title: "Posts",
-              href: `/dashboard/${orgId}`,
+              href: `/${orgId}`,
               icon: "post",
             },
             {
               title: "Settings",
-              href: `/dashboard/${orgId}/settings`,
+              href: `/${orgId}/settings`,
+              icon: "settings",
+            },
+            {
+              title: "Clerk",
+              href: `/${orgId}/clerk`,
               icon: "settings",
             },
           ]}

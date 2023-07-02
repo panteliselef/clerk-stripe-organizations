@@ -9,7 +9,7 @@ import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
 import { Icons } from "@/components/icons"
 import { MobileNav } from "@/components/mobile-nav"
-import { OrganizationSwitcher, UserButton } from "@clerk/nextjs"
+import { OrganizationSwitcher } from "@clerk/nextjs"
 import { WorkspaceSwitcher } from "@/components/workspace-switcher"
 
 interface MainNavProps {
@@ -58,19 +58,11 @@ export function MainNav({ items, children }: MainNavProps) {
       {showMobileMenu && items && (
         <MobileNav items={items}>{children}</MobileNav>
       )}
-      <WorkspaceSwitcher />
+      <WorkspaceSwitcher hidePersonal={true} />
       <OrganizationSwitcher
-        appearance={{
-          elements: {
-            organizationPreviewMainIdentifier__organizationSwitcher: {
-              color: "white",
-            },
-            organizationSwitcherPopoverCard: {
-              border: "1px solid red",
-              background: "",
-            },
-          },
-        }}
+        hidePersonal={true}
+        // TODO: Can we make `afterCreateOrganizationUrl` to be (org:OrganizationResource) => push(`/${org.id}`)
+        // afterCreateOrganizationUrl={}
       />
     </div>
   )

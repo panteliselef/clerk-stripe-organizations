@@ -1,12 +1,30 @@
-// import { getToken } from "next-auth/jwt"
-// import { withAuth } from "next-auth/middleware"
-// import { NextResponse } from "next/server"
-
-import { authMiddleware } from "@clerk/nextjs"
+import { authMiddleware, redirectToSignIn } from "@clerk/nextjs"
 
 export default authMiddleware({
   ignoredRoutes: ["/api/webhooks/:path*"],
   publicRoutes: ["/login", "/register", "/"],
+
+  afterAuth(auth, req) {
+    // handle users who aren't authenticated
+    if (!auth.userId && !auth.isPublicRoute) {
+      return redirectToSignIn({ returnBackUrl: req.url })
+    }
+
+    // redirect them to organization selection page
+    if (
+      auth.userId &&
+      !auth.orgId &&
+      !auth.isApiRoute &&
+      req.nextUrl.pathname !== "/create-organization"
+    ) {
+      /**
+       * TODO: This will not work because we want to return back to the new created URL
+       * the orgId will still be empty even if we have just created an work. We need a way to set a new created org as active from the frontend
+       */
+      // const orgSelection = new URL("/create-organization", req.url)
+      // return NextResponse.redirect(orgSelection)
+    }
+  },
 })
 
 export const config = {

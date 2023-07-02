@@ -1,6 +1,6 @@
 export function DashboardShell(props: {
-  title: string
-  description: string
+  title?: string
+  description?: string
   headerAction?: React.ReactNode
   children: React.ReactNode
   className?: string

@@ -24,6 +24,7 @@ import {
   User,
   Users,
   X,
+  Infinity,
   type Icon as LucideIcon,
 } from "lucide-react"
 
@@ -52,6 +53,7 @@ export const Icons = {
   moon: Moon,
   team: Users,
   laptop: Laptop,
+  infinite: Infinity,
   gitHub: ({ ...props }: LucideProps) => (
     <svg
       aria-hidden="true"

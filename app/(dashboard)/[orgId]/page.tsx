@@ -6,21 +6,12 @@ import { PostCreateButton } from "@/components/post-create-button"
 import { PostItem } from "@/components/post-item"
 import { DashboardShell } from "@/components/shell"
 import { clerkClient, currentUser } from "@clerk/nextjs"
-import { CreateOrg } from "@/app/(dashboard)/dashboard/createOrg"
+import { CreateOrg } from "@/app/(dashboard)/createOrg"
 import { Badge } from "@/components/ui/badge"
 import RefreshButton from "./refresh-button"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import * as React from "react"
-import {
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
-
 export const metadata = {
   title: "Dashboard",
 }

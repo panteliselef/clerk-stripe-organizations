@@ -35,7 +35,7 @@ export async function POST(req: Request) {
       subscription_data: {
         metadata: { userId, organizationId: orgId },
       },
-      success_url: `${env.NEXT_PUBLIC_APP_URL}/dashboard/${orgId}`,
+      success_url: `${env.NEXT_PUBLIC_APP_URL}/${orgId}`,
       line_items: [{ price: planId, quantity: 1 }],
     })
 
