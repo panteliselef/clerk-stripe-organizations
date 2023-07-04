@@ -2,7 +2,6 @@ import { headers } from "next/headers"
 import Stripe from "stripe"
 
 import { env } from "@/env.mjs"
-import { db } from "@/lib/db"
 import { stripe } from "@/lib/stripe"
 import { clerkClient } from "@clerk/nextjs"
 
@@ -51,6 +50,12 @@ export async function POST(req: Request) {
       },
     })
 
+    await clerkClient.organizations.updateOrganization(organizationId, {
+      maxAllowedMemberships:
+        parseInt(subscription.items.data[0].price.metadata?.max_members, 10) ||
+        1,
+    })
+
     await clerkClient.organizations.updateOrganizationMetadata(organizationId, {
       publicMetadata: {
         stripeSubscriptionId: subscription.id,
@@ -61,25 +66,25 @@ export async function POST(req: Request) {
     // }, 3000)
   }
 
-  if (event.type === "invoice.payment_succeeded") {
-    // Retrieve the subscription details from Stripe.
-    const subscription = await stripe.subscriptions.retrieve(
-      session.subscription as string
-    )
-
-    // Update the price id and set the new period end.
-    await db.user.update({
-      where: {
-        stripeSubscriptionId: subscription.id,
-      },
-      data: {
-        stripePriceId: subscription.items.data[0].price.id,
-        stripeCurrentPeriodEnd: new Date(
-          subscription.current_period_end * 1000
-        ),
-      },
-    })
-  }
+  // if (event.type === "invoice.payment_succeeded") {
+  //   // Retrieve the subscription details from Stripe.
+  //   const subscription = await stripe.subscriptions.retrieve(
+  //     session.subscription as string
+  //   )
+  //
+  //   // Update the price id and set the new period end.
+  //   await db.user.update({
+  //     where: {
+  //       stripeSubscriptionId: subscription.id,
+  //     },
+  //     data: {
+  //       stripePriceId: subscription.items.data[0].price.id,
+  //       stripeCurrentPeriodEnd: new Date(
+  //         subscription.current_period_end * 1000
+  //       ),
+  //     },
+  //   })
+  // }
 
   return new Response(null, { status: 200 })
 }

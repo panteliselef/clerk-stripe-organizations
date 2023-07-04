@@ -25,6 +25,8 @@ import {
   Users,
   X,
   Infinity,
+  Coins,
+  Download,
   type Icon as LucideIcon,
 } from "lucide-react"
 
@@ -54,6 +56,8 @@ export const Icons = {
   team: Users,
   laptop: Laptop,
   infinite: Infinity,
+  coins: Coins,
+  download: Download,
   gitHub: ({ ...props }: LucideProps) => (
     <svg
       aria-hidden="true"

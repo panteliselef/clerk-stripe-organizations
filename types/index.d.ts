@@ -1,5 +1,4 @@
 import { User } from "@prisma/client"
-import type { Icon } from "lucide-react"
 
 import { Icons } from "@/components/icons"
 
@@ -63,3 +62,16 @@ export type UserSubscriptionPlan = SubscriptionPlan &
     stripeCurrentPeriodEnd: number
     isPro: boolean
   }
+
+export type AppOrganizationMetadata = {
+  stripeSubscriptionId: string
+  stripePriceId: string
+  paidUntil: Date
+}
+
+export type AppUserMetadata = {
+  stripeCustomerId: string
+  stripeSubscriptionId: string
+  stripePriceId: string
+  paidUntil: Date
+}

@@ -20,39 +20,53 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
-
-const MEMBERSHIP = {
-  Member: "basic_member",
-  Admin: "admin",
-} as const
+import { InviteOrgMember, MEMBERSHIP } from "@/lib/validations"
+import { useOrganization } from "@clerk/nextjs"
 
 export const InviteMemberForm = () => {
   const toaster = useToast()
 
+  const { organization } = useOrganization()
   const form = useForm()
 
-  // async function onSubmit(data: InviteOrgMember) {
-  //   try {
-  //     // const member = await api.organization.inviteMember.mutate(data)
-  //     toaster.toast({
-  //       title: "Member invited",
-  //       description: `An invitation to ${member.name} has been sent.`,
-  //     })
-  //   } catch (error) {
-  //     toaster.toast({
-  //       title: "Invitation failed",
-  //       variant: "destructive",
-  //       description: `An issue occured while inviting ${data.email}. Make sure they have an account, and try again.`,
-  //     })
-  //   }
-  // }
+  // TODO:
+  //  create stripe session for "per-member"
+  //  attach orgId as metadata
+  //  listen in webhooks
+  //  if this successfully resolves update the org's max allowed numbers by the number of unit for each invitation
+
+  // IS there an afterOrganizationDeletedUrl ?
+
+  async function onSubmit(data: InviteOrgMember) {
+    try {
+      const updatedSubscription = await fetch("/api/stripe/members", {
+        method: "POST",
+        body: JSON.stringify({
+          ...data,
+          planId: "price_1NQ1JKCxmbhrzbGQnJsWqnRy",
+          orgId: organization?.id,
+          units: 1,
+        }),
+      }).then((res) => res.json())
+
+      console.log("updatedSubscription", updatedSubscription)
+
+      toaster.toast({
+        title: "Member invited",
+        description: `An invitation to ${data.email} has been sent.`,
+      })
+    } catch (error) {
+      toaster.toast({
+        title: "Invitation failed",
+        variant: "destructive",
+        description: `An issue occurred while inviting ${data.email}. Make sure they have an account, and try again.`,
+      })
+    }
+  }
 
   return (
     <Form {...form}>
-      <form
-        // onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-4"
-      >
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <FormField
           control={form.control}
           name="email"
@@ -60,7 +74,7 @@ export const InviteMemberForm = () => {
             <FormItem>
               <FormLabel>Email *</FormLabel>
               <FormControl>
-                <Input {...field} placeholder="john@doe.com" />
+                <Input {...field} placeholder="e.g. john@doe.com" />
               </FormControl>
               <FormDescription>
                 The email address of the person you want to invite. They must
@@ -80,7 +94,7 @@ export const InviteMemberForm = () => {
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select a plan" />
+                    <SelectValue placeholder="Select a role" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
@@ -96,7 +110,7 @@ export const InviteMemberForm = () => {
           )}
         />
 
-        <Button type="submit">Create Project</Button>
+        <Button type="submit">Invite</Button>
       </form>
     </Form>
   )

@@ -46,6 +46,11 @@ export default async function OrganizationLayout({
               href: `/${orgId}/clerk`,
               icon: "settings",
             },
+            {
+              title: "Billing",
+              href: `/${orgId}/billing`,
+              icon: "coins",
+            },
           ]}
         />
       </aside>

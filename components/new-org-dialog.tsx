@@ -72,8 +72,6 @@ export function NewOrganizationDialog(props: { closeDialog: () => void }) {
       orgId: org.id,
     })
 
-    console.log("response ")
-
     if (response.success) window.location.href = response.url
     else
       toaster.toast({
