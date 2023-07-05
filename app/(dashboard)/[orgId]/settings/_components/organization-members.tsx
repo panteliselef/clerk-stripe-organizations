@@ -1,36 +1,33 @@
 "use client"
 
+// @ts-expect-error
 import { use } from "react"
-import { useRouter } from "next/navigation"
+import type { OrganizationMembership } from "@clerk/backend"
 import { useAuth } from "@clerk/nextjs"
 import { formatRelative } from "date-fns"
 
-import { useToast } from "@/components/ui/use-toast"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Icons } from "@/components/icons"
-import { Button } from "@/components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   Table,
+  TableBody,
+  TableCell,
+  TableHead,
   TableHeader,
   TableRow,
-  TableHead,
-  TableCell,
-  TableBody,
 } from "@/components/ui/table"
-import { OrganizationMembership } from "@clerk/backend"
+import { Icons } from "@/components/icons"
 
 export function OrganizationMembers(props: {
   membersPromise: Promise<OrganizationMembership[]>
 }) {
   const members = use(props.membersPromise) as OrganizationMembership[]
-  const toaster = useToast()
-  const router = useRouter()
 
   const { orgRole } = useAuth()
 

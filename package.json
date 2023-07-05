@@ -9,7 +9,8 @@
   "scripts": {
     "dev": "next dev",
     "dev:cms": "concurrently \"contentlayer dev\" \"next dev\"",
-    "build": "contentlayer build && next build",
+    "build": "next build",
+    "build:cms": "contentlayer build && next build",
     "turbo": "next dev --turbo",
     "start": "next start",
     "lint": "next lint",
@@ -18,7 +19,8 @@
     "postinstall": "prisma generate"
   },
   "dependencies": {
-    "@clerk/nextjs": "^4.21.10",
+    "@clerk/backend": "^0.23.7",
+    "@clerk/nextjs": "^4.21.13",
     "@editorjs/code": "^2.8.0",
     "@editorjs/editorjs": "^2.26.5",
     "@editorjs/embed": "^2.5.3",

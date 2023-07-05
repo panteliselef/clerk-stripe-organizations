@@ -1,4 +1,5 @@
 import { auth } from "@clerk/nextjs"
+
 import { stripe } from "@/lib/stripe"
 
 export async function GET() {
@@ -12,6 +13,7 @@ export async function GET() {
     const prices = await stripe.prices.list()
 
     const products = prices.data
+      // @ts-ignore
       .sort((a, b) => a.unit_amount - b.unit_amount)
       .map((p) => p.product as string)
 

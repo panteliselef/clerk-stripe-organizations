@@ -1,19 +1,13 @@
-import * as z from "zod"
+import { auth, clerkClient, currentUser } from "@clerk/nextjs"
 
-import { auth, clerkClient } from "@clerk/nextjs"
-import { stripe } from "@/lib/stripe"
 import { env } from "@/env.mjs"
-
-export const purchaseOrgSchema = z.object({
-  orgId: z.string().min(5, "Id must be at least 5 characters"),
-  planId: z.string(),
-})
-
-export type PurchaseOrgSchema = z.infer<typeof purchaseOrgSchema>
+import { stripe } from "@/lib/stripe"
+import { purchaseOrgSchema } from "@/lib/validations"
 
 export async function POST(req: Request) {
   try {
     const { userId } = auth()
+    const user = await currentUser()
 
     if (!userId) {
       return new Response("Unauthorized", { status: 403 })
@@ -32,6 +26,7 @@ export async function POST(req: Request) {
       mode: "subscription",
       payment_method_types: ["card"],
       client_reference_id,
+      customer_email: user?.emailAddresses[0]?.emailAddress || undefined,
       subscription_data: {
         metadata: { userId, organizationId: orgId },
       },

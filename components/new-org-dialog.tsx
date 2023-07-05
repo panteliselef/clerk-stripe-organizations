@@ -1,10 +1,14 @@
 "use client"
 
 import * as React from "react"
-import { useForm } from "react-hook-form"
-import { useOrganizations } from "@clerk/nextjs"
 import { useState } from "react"
-import { useToast } from "@/components/ui/use-toast"
+import Link from "next/link"
+import { useOrganizations } from "@clerk/nextjs"
+import { useForm } from "react-hook-form"
+import * as z from "zod"
+
+import { PurchaseOrgSchema } from "@/lib/validations"
+import { Button } from "@/components/ui/button"
 import {
   DialogContent,
   DialogDescription,
@@ -21,7 +25,6 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import Link from "next/link"
 import {
   Select,
   SelectContent,
@@ -29,9 +32,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Button } from "@/components/ui/button"
-import * as z from "zod"
-import { PurchaseOrgSchema } from "@/app/api/stripe/subscription/route"
+import { useToast } from "@/components/ui/use-toast"
 
 const fetchPlans = fetch("/api/stripe/plans").then((res) => res.json())
 
@@ -49,6 +50,7 @@ const createOrg = (org: PurchaseOrgSchema) =>
   }).then((res) => res.json())
 
 export function NewOrganizationDialog(props: { closeDialog: () => void }) {
+  // @ts-ignore
   const plans = React.use(fetchPlans)
   const form = useForm()
   const { createOrganization, isLoaded } = useOrganizations()

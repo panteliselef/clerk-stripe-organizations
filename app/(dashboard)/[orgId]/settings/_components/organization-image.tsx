@@ -1,6 +1,8 @@
 "use client"
 
 import * as React from "react"
+
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   Card,
   CardContent,
@@ -9,7 +11,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Dialog } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 
@@ -18,7 +19,7 @@ export function OrganizationImage(props: {
   image: string
   orgId: string
 }) {
-  const [setImgSrc] = React.useState("")
+  const [, setImgSrc] = React.useState("")
   const [cropModalOpen, setCropModalOpen] = React.useState(false)
 
   return (

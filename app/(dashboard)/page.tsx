@@ -1,10 +1,12 @@
-import { DashboardHeader } from "@/components/header"
-import { clerkClient, currentUser } from "@clerk/nextjs"
-import { EmptyPlaceholder } from "@/components/empty-placeholder"
 import * as React from "react"
-import { CreateOrgButton } from "./org-button"
-import { MemberShipCard } from "./membership-card"
 import { redirect } from "next/navigation"
+import { clerkClient, currentUser } from "@clerk/nextjs"
+
+import { EmptyPlaceholder } from "@/components/empty-placeholder"
+import { DashboardHeader } from "@/components/header"
+
+import { MemberShipCard } from "./membership-card"
+import { CreateOrgButton } from "./org-button"
 
 export const metadata = {
   title: "Dashboard",
@@ -47,7 +49,9 @@ export default async function DashboardPage() {
           <CreateOrgButton variant={"outline"} />
         </EmptyPlaceholder>
       ) : (
-        <div className={"grid grid-cols-3 gap-4"}>
+        <div
+          className={"grid grid-cols-1 gap-4  md:grid-cols-2 xl:grid-cols-3"}
+        >
           {memberships.map((m) => (
             <MemberShipCard {...m} />
           ))}

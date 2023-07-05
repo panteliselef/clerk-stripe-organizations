@@ -14,3 +14,10 @@ export const inviteOrgMemberSchema = z.object({
 })
 
 export type InviteOrgMember = z.infer<typeof inviteOrgMemberSchema>
+
+export const purchaseOrgSchema = z.object({
+  orgId: z.string().min(5, "Id must be at least 5 characters"),
+  planId: z.string(),
+})
+
+export type PurchaseOrgSchema = z.infer<typeof purchaseOrgSchema>
