@@ -1,9 +1,10 @@
-import { auth, clerkClient } from "@clerk/nextjs"
-import { stripe } from "@/lib/stripe"
 import { AppOrganizationMetadata } from "@/types"
-import Stripe from "stripe"
-import { InviteOrgMember, inviteOrgMemberSchema } from "@/lib/validations"
+import { auth, clerkClient } from "@clerk/nextjs"
 import { SECRET_KEY } from "@clerk/nextjs/server"
+import Stripe from "stripe"
+
+import { stripe } from "@/lib/stripe"
+import { InviteOrgMember, inviteOrgMemberSchema } from "@/lib/validations"
 
 function mapSubscriptionItems(
   items: Stripe.SubscriptionItem[]
@@ -45,7 +46,6 @@ export async function POST(req: Request) {
 
     const json = await req.json()
     const body = inviteOrgMemberSchema.parse(json)
-    // const planId = "price_1NQ1JKCxmbhrzbGQnJsWqnRy"
     const { orgId, units, planId, role, email } = body
 
     // Build headers
@@ -133,7 +133,6 @@ export async function POST(req: Request) {
       })
     )
   } catch (error) {
-    console.log("-----WOWO", error)
     return new Response(JSON.stringify(error), { status: 500 })
   }
 }

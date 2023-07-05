@@ -3,13 +3,13 @@
 import * as React from "react"
 import Link from "next/link"
 import { useSelectedLayoutSegment } from "next/navigation"
+import { OrganizationSwitcher, useOrganization } from "@clerk/nextjs"
 
 import { MainNavItem } from "types"
 import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
 import { Icons } from "@/components/icons"
 import { MobileNav } from "@/components/mobile-nav"
-import { OrganizationSwitcher } from "@clerk/nextjs"
 import { WorkspaceSwitcher } from "@/components/workspace-switcher"
 
 interface MainNavProps {
@@ -18,8 +18,12 @@ interface MainNavProps {
 }
 
 export function MainNav({ items, children }: MainNavProps) {
+  const { organization } = useOrganization()
+  console.log("-----ORG", organization?.id, organization?.name)
   const segment = useSelectedLayoutSegment()
   const [showMobileMenu, setShowMobileMenu] = React.useState<boolean>(false)
+
+  console.log("rendered", `/${organization?.id}/clerk`)
 
   return (
     <div className="flex gap-6 md:gap-10">
@@ -60,8 +64,25 @@ export function MainNav({ items, children }: MainNavProps) {
       )}
       <WorkspaceSwitcher hidePersonal={true} />
       <OrganizationSwitcher
+        // TODO: THIS SOLVE AN ULTRA WEIRD BUG
+        key={organization?.id}
+        // TODO: WHY DO WE NEED BOTH ?
+        createOrganizationUrl="/create-organization"
+        createOrganizationMode="navigation"
+        // TODO: WHY DO WE NEED BOTH ?
+        organizationProfileUrl={`/${organization?.id}/clerk`}
+        organizationProfileMode="navigation"
+        // -----------
         hidePersonal={true}
-        // TODO: Can we make `afterCreateOrganizationUrl` to be (org:OrganizationResource) => push(`/${org.id}`)
+        afterLeaveOrganizationUrl="/"
+        // afterCreateOrganizationUrl?: string;
+        //
+        // afterLeaveOrganizationUrl?: string;
+        //
+        // organizationProfileMode?: 'modal' | 'navigation';
+        //
+        // organizationProfileUrl?: string;
+        // TODO: Can we make `afterCreateOrganizationUrl` to be (org:OrganizationResource) => `/${org.id}`. This might be solvable take another look
         // afterCreateOrganizationUrl={}
       />
     </div>

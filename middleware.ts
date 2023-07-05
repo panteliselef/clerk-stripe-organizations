@@ -1,3 +1,4 @@
+import { NextResponse } from "next/server"
 import { authMiddleware, redirectToSignIn } from "@clerk/nextjs"
 
 export default authMiddleware({
@@ -21,8 +22,8 @@ export default authMiddleware({
        * TODO: This will not work because we want to return back to the new created URL
        * the orgId will still be empty even if we have just created an work. We need a way to set a new created org as active from the frontend
        */
-      // const orgSelection = new URL("/create-organization", req.url)
-      // return NextResponse.redirect(orgSelection)
+      const orgSelection = new URL("/create-organization", req.url)
+      return NextResponse.redirect(orgSelection)
     }
   },
 })

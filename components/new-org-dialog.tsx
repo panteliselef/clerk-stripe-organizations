@@ -3,7 +3,7 @@
 import * as React from "react"
 import { useState } from "react"
 import Link from "next/link"
-import { useOrganizations } from "@clerk/nextjs"
+import { useOrganizationList, useOrganizations } from "@clerk/nextjs"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
@@ -54,17 +54,22 @@ export function NewOrganizationDialog(props: { closeDialog: () => void }) {
   const plans = React.use(fetchPlans)
   const form = useForm()
   const { createOrganization, isLoaded } = useOrganizations()
+  const { setActive } = useOrganizationList()
   const [isCreatingOrg, setCreatingOrg] = useState(false)
   const [isCreatingStripeSession, setCreatingStripeSession] = useState(false)
 
   const toaster = useToast()
 
   async function handleCreateOrg(data: FormOrgSchema) {
-    if (!isLoaded) return
+    if (!isLoaded || !setActive) return
 
     setCreatingOrg(true)
     const org = await createOrganization({
       name: data.orgName,
+    })
+
+    await setActive({
+      organization: org,
     })
 
     setCreatingStripeSession(true)

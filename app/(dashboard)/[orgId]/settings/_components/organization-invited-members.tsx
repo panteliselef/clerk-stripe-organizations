@@ -3,34 +3,31 @@
 import { useAuth, useOrganization } from "@clerk/nextjs"
 import { formatRelative } from "date-fns"
 
+import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Icons } from "@/components/icons"
-import { Button } from "@/components/ui/button"
 import {
   Table,
+  TableBody,
+  TableCell,
+  TableHead,
   TableHeader,
   TableRow,
-  TableHead,
-  TableCell,
-  TableBody,
 } from "@/components/ui/table"
+import { Icons } from "@/components/icons"
 
 export function OrganizationInvitedMembers() {
-  const { invitationList, organization } = useOrganization({
+  const { invitationList } = useOrganization({
     invitationList: {},
   })
   const { orgRole } = useAuth()
 
-  console.log(invitationList, organization)
-
   if (!invitationList) return null
 
-  // TODO: DataTable with actions
   return (
     <Table>
       <TableHeader>
